@@ -272,10 +272,8 @@ var Canvas2dRenderer = (function Canvas2dRendererClosure() {
       gradient.addColorStop(0, 'rgba(0,0,0,1)');
       gradient.addColorStop(1, 'rgba(0,0,0,0)');
       tplCtx.fillStyle = gradient;
-      tplCtx.fillRect(0, 0, 2*radius, 2*radius);
+      tplCtx.fillRect(0, 0, 2*radius, 3*radius);
     }
-    
-    
 
     return tplCanvas;
   };

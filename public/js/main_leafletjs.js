@@ -1,7 +1,4 @@
 $(function() {
-
-
-  // now generate some random data
   //var points = [];
   //var max = 0;
   //var width = 200;
@@ -42,11 +39,11 @@ $(function() {
 
     var cfg = {
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-      "radius": 2,
+      "radius": 3,
       "opacity": 0.3,
       "maxOpacity": 0.3 ,
       // scales the radius based on map zoom
-      "scaleRadius": true, 
+      "scaleRadius": false, 
       // if set to false the heatmap uses the global maximum for colorization
       // if activated: uses the data maximum within the current map boundaries 
       //   (there will always be a red spot with useLocalExtremas true)
@@ -56,29 +53,51 @@ $(function() {
       // which field name in your data represents the longitude - default "lng"
       lngField: 'lng',
       // which field name in your data represents the data value - default "value"
-      valueField: 'count'
+      valueField: 'value'
     };
 
     var heatmapLayer = new HeatmapOverlay(cfg);
 
     var map = new L.Map('map-container', {
-      center: new L.LatLng(25.6586, -80.3568),
+      center: new L.LatLng(6.2630636,-75.5931752),
       zoom: 9,
       layers: [baseLayer, heatmapLayer]
     });
 
     heatmapLayer.setData(testData);
+
+
+    var hover = null;
+    map.on('mousemove', function(e) {
+      var p = e.containerPoint;
+
+      var value = heatmapLayer._heatmap.getValueAt({x: p.x, y: p.y});
+
+      console.debug(value);
+
+      if (hover !== null) {
+        map.removeLayer(hover);
+        hover = null;
+      }
+
+      if (value !== null) {
+        console.debug(value);
+        map._container.style.cursor = 'pointer';
+      } else {
+        map._container.style.cursor = 'auto';
+      }
+    });
   }
 
   var points = [];
   var max = 0;
-  $.ajax('/listings').done(function(data) {
+  $.ajax('/listings/medellin/value').done(function(data) {
     points = JSON.parse(data); 
     points.map(function(obj) {
-      console.log(obj.value);
     });
     max = data.length;
     initMap(points);
   });
+
 });
 
